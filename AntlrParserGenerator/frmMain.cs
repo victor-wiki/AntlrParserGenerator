@@ -107,6 +107,7 @@ namespace AntlrParserGenerator
             this.hasError = false;
             this.btnGenerate.Enabled = false;
             this.txtMessage.Text = "";
+            this.txtMessage.ForeColor = Color.Black;
 
             foreach (FileInfo file in sortedFiles)
             {
