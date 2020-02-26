@@ -16,7 +16,7 @@ namespace AntlrParserGenerator
     public partial class frmMain : Form
     {
         private readonly string currentFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        private readonly string jarFileName = "antlr-4.8-complete.jar";
+        private string jarFileName = "antlr-4.8-complete.jar";
         private string jarFilePath;
         private bool hasError = false;
 
@@ -28,16 +28,28 @@ namespace AntlrParserGenerator
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            this.jarFilePath = Path.Combine(currentFolder, jarFileName);
+            string configJarFileName = ConfigurationManager.AppSettings["JarFileName"];
+
+            if (!string.IsNullOrEmpty(configJarFileName))
+            {
+                this.jarFileName = configJarFileName;
+            }
+
+            this.jarFilePath = Path.Combine(this.currentFolder, this.jarFileName);
             this.InitControls();
         }
 
         private void InitControls()
         {
-            string defaultFileExtension = ConfigurationManager.AppSettings["DefaultFileExtension"] ?? ".g4";
-            this.openFileDialog1.Filter = $"grammar file|*{defaultFileExtension}|all files|*.*";
+            string grammarFileExtension = ConfigurationManager.AppSettings["GrammarFileExtension"] ?? ".g4";
+            this.openFileDialog1.Filter = $"grammar file|*{grammarFileExtension}|all files|*.*";
 
-            var languages = Enum.GetNames(typeof(Language));
+            string[] languages = ConfigurationManager.AppSettings["Languages"]?.Split(',');
+            if (languages == null || languages.Length == 0)
+            {
+                languages = Enum.GetNames(typeof(Language));
+            }
+
             this.cboTragetLanguage.Items.AddRange(languages);
 
             this.cboTragetLanguage.SelectedIndex = 0;
@@ -150,13 +162,13 @@ namespace AntlrParserGenerator
         }
 
         private void AppendMessage(bool isError, string message)
-        {          
-            this.txtMessage.Text += (this.txtMessage.Text.Length > 0 ? Environment.NewLine : "") + message;           
+        {
+            this.txtMessage.Text += (this.txtMessage.Text.Length > 0 ? Environment.NewLine : "") + message;
 
             if (isError)
             {
                 this.txtMessage.ForeColor = Color.Red;
-            }            
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)
