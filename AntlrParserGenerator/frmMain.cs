@@ -133,7 +133,7 @@ namespace AntlrParserGenerator
         {
             if (!string.IsNullOrEmpty(e.Data))
             {
-                //this.AppendMessage(false, e.Data);
+                this.AppendMessage(false, e.Data);
             }
         }
 
@@ -148,12 +148,20 @@ namespace AntlrParserGenerator
 
         private void AppendMessage(bool isError, string message)
         {
-            this.txtMessage.Text += (this.txtMessage.Text.Length > 0 ? Environment.NewLine : "") + message;
+            int start = this.txtMessage.Text.Length;
 
-            if (isError)
+            if (start > 0)
             {
-                this.txtMessage.ForeColor = Color.Red;
+                this.txtMessage.AppendText(Environment.NewLine);
             }
+
+            this.txtMessage.AppendText(message);
+
+            this.txtMessage.Select(start, this.txtMessage.Text.Length - start);
+            this.txtMessage.SelectionColor = isError ? Color.Red : Color.Black;
+
+            this.txtMessage.SelectionStart = this.txtMessage.TextLength;
+            this.txtMessage.ScrollToCaret();
         }
 
         private void btnClose_Click(object sender, EventArgs e)
