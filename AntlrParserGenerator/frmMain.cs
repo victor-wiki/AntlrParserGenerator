@@ -63,26 +63,10 @@ namespace AntlrParserGenerator
             {
                 this.txtFile.Text = string.Join("|", this.openFileDialog1.FileNames);
             }
-        }
-
-        private bool CheckJDK()
-        {
-            string javaHome = Environment.GetEnvironmentVariable("JAVA_HOME");
-            if (javaHome == null)
-            {
-                MessageBox.Show("JDK seems not to be present on your PC.");
-                return false;
-            }
-            return true;
-        }
+        }       
 
         private void btnGenerate_Click(object sender, EventArgs e)
         {
-            if (!this.CheckJDK())
-            {
-                return;
-            }
-
             string strFiles = this.txtFile.Text;
 
             string[] fileItems = strFiles.Split('|');
